@@ -2,182 +2,449 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f6f1e8">
 <title>爷爷礼金簿</title>
 <style>
-  * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    padding: 26px 16px 70px;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
-                 "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
-    color: #1f2937;
-    background: linear-gradient(165deg, #fdfbf7 0%, #f4f6fb 45%, #eef2f9 100%);
-    min-height: 100vh;
-    -webkit-font-smoothing: antialiased;
-  }
-  .wrap { max-width: 880px; margin: 0 auto; }
+  :root{
+    --pad-x: 16px;
+    --radius: 16px;
 
-  header { text-align: center; margin-bottom: 20px; }
-  h1 {
-    margin: 0 0 6px;
-    font-size: 26px;
-    letter-spacing: 2px;
-    font-weight: 700;
-    color: #8a5a12;
-  }
-  .sub {
-    font-size: 13px;
-    color: #9aa3b2;
-    letter-spacing: 1px;
+    --bg:      #f6f1e8;
+    --card:    #fffdfa;
+    --line:    #f0e8db;
+    --line-2:  #f5efe5;
+
+    --ink:     #2c2620;
+    --ink-2:   #6d6458;
+    --ink-3:   #a2988a;
+
+    --brand:   #b24a2e;
+    --brand-d: #8f3620;
+    --gold:    #a8762e;
+
+    --shadow:  0 10px 28px rgba(88,62,30,.08), 0 2px 6px rgba(88,62,30,.04);
+    --shadow-s:0 4px 14px rgba(88,62,30,.07);
   }
 
-  .stats {
-    display: flex;
-    gap: 10px;
-    margin: 16px 0 14px;
-    flex-wrap: wrap;
-  }
-  .stat {
-    flex: 1 1 0;
-    min-width: 130px;
-    background: #fff;
-    border-radius: 12px;
-    padding: 12px 16px;
-    box-shadow: 0 2px 10px rgba(15, 23, 42, .05);
-    border: 1px solid #f0f2f7;
-  }
-  .stat .k { font-size: 12px; color: #9aa3b2; letter-spacing: 1px; }
-  .stat .v {
-    font-size: 20px; font-weight: 700; color: #b4791f;
-    font-variant-numeric: tabular-nums; margin-top: 2px;
+  *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html{ -webkit-text-size-adjust:100%; }
+
+  body{
+    margin:0;
+    min-height:100vh;
+    padding:26px var(--pad-x) 64px;
+    padding-bottom:calc(64px + env(safe-area-inset-bottom));
+    font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+    background:
+      radial-gradient(1100px 520px at 8% -12%, #fff9ef 0%, rgba(255,249,239,0) 62%),
+      radial-gradient(900px 480px at 102% -4%, #fdeee0 0%, rgba(253,238,224,0) 58%),
+      linear-gradient(180deg, #f8f3ea 0%, #f2ece0 100%);
+    background-attachment:fixed;
   }
 
-  .card {
-    background: #fff;
-    border-radius: 16px;
-    box-shadow: 0 12px 34px rgba(15, 23, 42, .08), 0 2px 6px rgba(15, 23, 42, .04);
-    overflow: hidden;
-    border: 1px solid #f0f2f7;
+  .wrap{ max-width:880px; margin:0 auto; }
+
+  /* ---------- 顶部标题 ---------- */
+  .hero{ text-align:center; padding:4px 0 18px; }
+  h1{
+    margin:0;
+    font-size:25px;
+    font-weight:700;
+    letter-spacing:4px;
+    color:#3a2f22;
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+  }
+  .seal{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:38px; height:38px;
+    border-radius:10px;
+    font-size:20px;
+    font-weight:700;
+    letter-spacing:0;
+    color:#fff6ea;
+    background:linear-gradient(160deg, #c8553a 0%, #a53d24 100%);
+    box-shadow:0 5px 14px rgba(165,61,36,.32);
+  }
+  .sub{
+    margin:10px 0 0;
+    font-size:14px;
+    letter-spacing:1px;
+    color:var(--ink-3);
   }
 
-  table { width: 100%; border-collapse: separate; border-spacing: 0; }
-
-  thead th {
-    position: sticky; top: 0; z-index: 3;
-    background: #fbfcfe;
-    text-align: left;
-    padding: 12px 16px 14px;
-    font-size: 13px;
-    font-weight: 600;
-    color: #6b7280;
-    letter-spacing: 1px;
-    border-bottom: 1px solid #eef1f6;
-    backdrop-filter: blur(6px);
+  /* ---------- 统计 ---------- */
+  .stats{
+    display:flex;
+    gap:10px;
+    margin-bottom:12px;
   }
-  thead th:nth-child(1) { width: 30%; }
-  thead th:nth-child(2) { width: 22%; }
-  thead th:nth-child(3) { width: 48%; }
-
-  thead input {
-    display: block;
-    width: 100%;
-    margin-top: 8px;
-    padding: 8px 11px;
-    font-size: 14px;
-    color: #111827;
-    background: #fff;
-    border: 1px solid #e3e7ef;
-    border-radius: 9px;
-    outline: none;
-    transition: border-color .18s, box-shadow .18s;
+  .stat{
+    flex:1 1 0;
+    min-width:0;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:12px 15px;
+    box-shadow:var(--shadow-s);
   }
-  thead input::placeholder { color: #b9c0cd; }
-  thead input:focus {
-    border-color: #d0a250;
-    box-shadow: 0 0 0 3px rgba(208, 162, 80, .16);
+  .stat .k{
+    font-size:13px;
+    letter-spacing:1px;
+    color:var(--ink-3);
+    white-space:nowrap;
   }
-
-  tbody td {
-    padding: 11px 16px;
-    font-size: 15px;
-    border-bottom: 1px solid #f4f6fa;
-    vertical-align: middle;
+  .stat .v{
+    margin-top:3px;
+    font-size:23px;
+    font-weight:700;
+    line-height:1.2;
+    color:var(--gold);
+    font-variant-numeric:tabular-nums;
+    font-feature-settings:"tnum";
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
   }
-  tbody tr:last-child td { border-bottom: none; }
-  tbody tr:hover td { background: #fffaf1; }
-
-  .c-name { font-weight: 600; color: #1f2937; }
-  .c-amt {
-    color: #b4791f;
-    font-weight: 600;
-    font-variant-numeric: tabular-nums;
-  }
-  .c-note { color: #6b7280; font-size: 14px; }
-
-  mark {
-    background: #ffe9a8;
-    color: #8a5a12;
-    border-radius: 3px;
-    padding: 0 1px;
+  #sum{ color:var(--brand); }
+  .stat .unit{
+    font-size:13px;
+    font-weight:500;
+    color:var(--ink-3);
+    margin-left:3px;
   }
 
-  .empty {
-    padding: 46px 16px;
-    text-align: center;
-    color: #9aa3b2;
-    font-size: 14px;
+  .clear{
+    flex:0 0 auto;
+    align-self:center;
+    width:46px; height:46px;
+    border:none;
+    border-radius:14px;
+    background:var(--card);
+    border:1px solid var(--line);
+    color:var(--ink-3);
+    font-size:17px;
+    line-height:1;
+    cursor:pointer;
+    box-shadow:var(--shadow-s);
+    transition:all .2s ease;
+    opacity:0;
+    transform:scale(.85);
+    pointer-events:none;
+  }
+  .clear.show{ opacity:1; transform:scale(1); pointer-events:auto; }
+  .clear:active{ transform:scale(.92); background:#fbf3e6; color:var(--brand); }
+
+  /* ---------- 搜索吸附条 ---------- */
+  .search-dock{
+    position:sticky;
+    top:0;
+    z-index:20;
+    margin:0 calc(-1 * var(--pad-x));
+    padding:8px var(--pad-x) 10px;
+    background:rgba(246,241,232,.82);
+    -webkit-backdrop-filter:blur(12px) saturate(1.15);
+    backdrop-filter:blur(12px) saturate(1.15);
+    transition:background .25s ease, box-shadow .25s ease;
+  }
+  .search-dock.is-stuck{
+    background:rgba(246,241,232,.95);
+    box-shadow:0 8px 20px rgba(88,62,30,.09);
   }
 
-  footer {
-    text-align: center;
-    margin-top: 18px;
-    font-size: 12px;
-    color: #a8b0be;
-    letter-spacing: .5px;
+  .searchbar{
+    display:grid;
+    grid-template-columns:3fr 1.7fr 5.4fr;
+    gap:10px;
+    padding:8px;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:14px;
+    box-shadow:var(--shadow-s);
+  }
+  .searchbar input{
+    width:100%;
+    height:44px;
+    padding:0 13px;
+    font-family:inherit;
+    font-size:17px;              /* ≥16px 防移动端聚焦缩放 */
+    color:var(--ink);
+    background:#faf6ee;
+    border:1px solid #eee6d8;
+    border-radius:10px;
+    outline:none;
+    -webkit-appearance:none;
+    appearance:none;
+    transition:background .18s ease, border-color .18s ease, box-shadow .18s ease;
+  }
+  .searchbar input::placeholder{ color:#b8ad9b; }
+  .searchbar input:focus{
+    background:#fff;
+    border-color:#dcbb8b;
+    box-shadow:0 0 0 3px rgba(200,150,80,.15);
+  }
+  .searchbar input:not(:placeholder-shown){
+    background:#fffdf6;
+    border-color:#e6d3ad;
   }
 
-  @media (max-width: 560px) {
-    body { padding: 16px 10px 50px; }
-    h1 { font-size: 21px; }
-    thead th, tbody td { padding-left: 10px; padding-right: 10px; }
-    tbody td { font-size: 14px; }
-    thead th:nth-child(1) { width: 34%; }
-    thead th:nth-child(2) { width: 24%; }
-    thead th:nth-child(3) { width: 42%; }
+  /* ---------- 表格卡片 ---------- */
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    overflow:hidden;
+  }
+
+  table{
+    width:100%;
+    table-layout:fixed;
+    border-collapse:collapse;
+  }
+
+  thead th{
+    padding:13px 16px;
+    text-align:left;
+    font-size:14px;
+    font-weight:600;
+    letter-spacing:2px;
+    color:var(--ink-3);
+    background:#fbf8f2;
+    border-bottom:1px solid var(--line);
+    white-space:nowrap;
+  }
+  thead th:nth-child(1){ width:30%; }
+  thead th:nth-child(2){ width:18%; }
+  thead th:nth-child(3){ width:52%; }
+
+  tbody td{
+    padding:13px 16px;
+    font-size:17px;
+    border-bottom:1px solid var(--line-2);
+    vertical-align:middle;
+    overflow-wrap:anywhere;
+  }
+  tbody tr:last-child td{ border-bottom:none; }
+
+  .c-name{ font-weight:600; color:var(--ink); letter-spacing:.3px; }
+  .c-amt{
+    color:var(--brand);
+    font-weight:700;
+    font-variant-numeric:tabular-nums;
+    font-feature-settings:"tnum";
+  }
+  .c-note{ color:var(--ink-3); font-size:15px; }
+
+  mark{
+    background:#ffeda6;
+    color:inherit;
+    border-radius:3px;
+    padding:0 1px;
+    box-decoration-break:clone;
+    -webkit-box-decoration-break:clone;
+  }
+
+  @media (hover:hover) and (min-width:621px){
+    tbody tr{ transition:background .15s ease; }
+    tbody tr:nth-child(even){ background:#fdfbf6; }
+    tbody tr:hover{ background:#fdf5e7; }
+  }
+
+  /* ---------- 空状态 ---------- */
+  .empty{
+    padding:52px 20px 56px;
+    text-align:center;
+    color:var(--ink-3);
+  }
+  .empty .ico{
+    font-size:32px;
+    line-height:1;
+    opacity:.55;
+    margin-bottom:12px;
+  }
+  .empty p{
+    margin:0 0 16px;
+    font-size:15px;
+    letter-spacing:1px;
+  }
+  .empty button{
+    padding:10px 22px;
+    font-family:inherit;
+    font-size:15px;
+    color:var(--brand);
+    background:#fdf3ec;
+    border:1px solid #f3ddcf;
+    border-radius:10px;
+    cursor:pointer;
+  }
+  .empty button:active{ background:#f8e7db; }
+
+  footer{
+    margin-top:20px;
+    text-align:center;
+    font-size:14px;
+    letter-spacing:1px;
+    color:#b3a999;
+  }
+
+  /* ================= 手机端 ================= */
+  @media (max-width:620px){
+    :root{ --pad-x:12px; --radius:14px; }
+
+    body{
+      padding-top:18px;
+      padding-bottom:calc(48px + env(safe-area-inset-bottom));
+    }
+
+    .hero{ padding:2px 0 16px; }
+    h1{ font-size:23px; letter-spacing:3px; gap:8px; }
+    .seal{ width:34px; height:34px; font-size:18px; border-radius:9px; }
+    .sub{ margin-top:8px; font-size:13.5px; }
+
+    .stats{ gap:8px; margin-bottom:10px; }
+    .stat{ padding:10px 13px; border-radius:12px; }
+    .stat .k{ font-size:12.5px; letter-spacing:.5px; }
+    .stat .v{ font-size:21px; }
+    .clear{ width:44px; height:44px; border-radius:13px; font-size:16px; }
+
+    .search-dock{ padding:6px var(--pad-x) 8px; }
+    .searchbar{
+      grid-template-columns:1.1fr .85fr 1.3fr;
+      gap:6px;
+      padding:6px;
+      border-radius:12px;
+    }
+    .searchbar input{
+      height:46px;
+      padding:0 10px;
+      font-size:17px;            /* 加大且 ≥16 防缩放 */
+      border-radius:9px;
+    }
+
+    /* 表格 → 卡片列表 */
+    table, thead, tbody, tr, td{ display:block; }
+    thead{ display:none; }
+
+    tbody tr{
+      display:grid;
+      grid-template-columns:1fr auto;
+      align-items:center;
+      gap:4px 12px;
+      padding:14px 15px;
+      border-bottom:1px solid var(--line-2);
+      transition:background .12s ease;
+    }
+    tbody tr:last-child{ border-bottom:none; }
+    tbody tr:active{ background:#fdf6ea; }
+
+    tbody td{
+      padding:0;
+      border:none;
+    }
+    td.c-name{
+      font-size:19px;
+      font-weight:600;
+      grid-column:1;
+      grid-row:1;
+      line-height:1.25;
+    }
+    td.c-amt{
+      grid-column:2;
+      grid-row:1;
+      font-size:21px;
+      text-align:right;
+      letter-spacing:.5px;
+      line-height:1.2;
+    }
+    td.c-note{
+      grid-column:1 / -1;
+      grid-row:2;
+      margin-top:3px;
+      font-size:14.5px;
+      color:var(--ink-3);
+      line-height:1.5;
+    }
+    td.c-note:empty{ display:none; }
+
+    .empty{ padding:44px 16px 46px; }
+    .empty p{ font-size:15px; }
+  }
+
+  /* 超小屏微调 */
+  @media (max-width:360px){
+    .searchbar{ grid-template-columns:1fr 0.9fr 1.15fr; gap:5px; }
+    .searchbar input{ padding:0 8px; font-size:16px; }
+    h1{ font-size:20px; letter-spacing:2px; }
+    .seal{ width:30px; height:30px; font-size:16px; }
+    .stat .v{ font-size:19px; }
+    .stat .k{ font-size:12px; }
+    td.c-name{ font-size:17.5px; }
+    td.c-amt{ font-size:19.5px; }
+    td.c-note{ font-size:14px; }
   }
 </style>
 </head>
 <body>
+
 <div class="wrap">
-  <header>
-    <h1>爷爷礼金簿</h1>
-    <div class="sub">三列皆可搜索 · 输入即筛选</div>
+
+  <header class="hero">
+    <h1><span class="seal">礼</span>爷爷礼金簿</h1>
+    <p class="sub">姓名 · 礼金 · 备注　三列实时搜索</p>
   </header>
 
   <div class="stats">
-    <div class="stat"><div class="k">当前显示</div><div class="v" id="count">0</div></div>
-    <div class="stat"><div class="k">礼金合计（元）</div><div class="v" id="sum">0</div></div>
+    <div class="stat">
+      <div class="k">当前显示</div>
+      <div class="v" id="count">0</div>
+    </div>
+    <div class="stat">
+      <div class="k">礼金合计</div>
+      <div class="v"><span id="sum">0</span><span class="unit">元</span></div>
+    </div>
+    <button class="clear" id="clear" type="button" aria-label="清空搜索">✕</button>
+  </div>
+
+  <div class="search-dock" id="dock">
+    <div class="searchbar">
+      <input id="q-name"   type="text"  placeholder="姓名" autocomplete="off" enterkeyhint="search">
+      <input id="q-amount" type="text"  placeholder="金额" inputmode="numeric" autocomplete="off" enterkeyhint="search">
+      <input id="q-note"   type="text"  placeholder="备注" autocomplete="off" enterkeyhint="search">
+    </div>
   </div>
 
   <div class="card">
     <table>
       <thead>
         <tr>
-          <th>姓名<input id="q-name" type="text" placeholder="搜姓名…" autocomplete="off"></th>
-          <th>礼金<input id="q-amount" type="text" placeholder="搜金额…" inputmode="numeric" autocomplete="off"></th>
-          <th>备注<input id="q-note" type="text" placeholder="搜备注…" autocomplete="off"></th>
+          <th>姓名</th>
+          <th>礼金</th>
+          <th>备注</th>
         </tr>
       </thead>
       <tbody id="tbody"></tbody>
     </table>
-    <div class="empty" id="empty" style="display:none">没有找到匹配的记录</div>
+
+    <div class="empty" id="empty" hidden>
+      <div class="ico">🔍</div>
+      <p>没有找到匹配的记录</p>
+      <button type="button" id="clear2">清空搜索条件</button>
+    </div>
   </div>
 
   <footer>共 <span id="total">0</span> 条记录</footer>
 </div>
 
 <script>
+/* ================= 原始数据 ================= */
 const RAW = `
 陈龙军|300|
 况健|100|
@@ -1087,54 +1354,61 @@ const RAW = `
 江能能|200|四方井
 `;
 
-/* ---------- 数据解析 ---------- */
+/* ================= 解析 ================= */
 const data = RAW.trim().split('\n').map(line => {
   const p = line.split('|');
   return {
-    name: (p[0] || '').trim(),
+    name:   (p[0] || '').trim(),
     amount: Number((p[1] || '0').trim()) || 0,
-    note: (p[2] || '').trim()
+    note:   (p[2] || '').trim()
   };
 });
 
-/* ---------- 工具函数 ---------- */
-const esc = s => String(s).replace(/[&<>"]/g, c =>
-  ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-
-function highlight(text, q) {
-  const safe = esc(text);
-  if (!q) return safe;
-  const needle = esc(q).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  try {
-    return safe.replace(new RegExp(needle, 'gi'), m => '<mark>' + m + '</mark>');
-  } catch (e) {
-    return safe;
-  }
-}
-
-/* ---------- DOM ---------- */
+/* ================= DOM ================= */
 const tbody   = document.getElementById('tbody');
 const emptyEl = document.getElementById('empty');
 const countEl = document.getElementById('count');
 const sumEl   = document.getElementById('sum');
 const totalEl = document.getElementById('total');
+const clearBt = document.getElementById('clear');
+const clearB2 = document.getElementById('clear2');
+const dock    = document.getElementById('dock');
+
 const qName   = document.getElementById('q-name');
 const qAmount = document.getElementById('q-amount');
 const qNote   = document.getElementById('q-note');
 
 totalEl.textContent = data.length;
 
-/* ---------- 渲染 ---------- */
-function render() {
-  const n  = qName.value.trim();
-  const a  = qAmount.value.trim();
-  const o  = qNote.value.trim();
+/* ================= 工具 ================= */
+const ESC_MAP = { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' };
+const esc = s => String(s).replace(/[&<>"]/g, c => ESC_MAP[c]);
 
-  let html = '';
+function buildRe(q){
+  if (!q) return null;
+  const needle = esc(q).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  try { return new RegExp(needle, 'gi'); } catch (e) { return null; }
+}
+function mark(text, re){
+  const s = esc(text);
+  return re ? s.replace(re, m => '<mark>' + m + '</mark>') : s;
+}
+
+/* ================= 渲染 ================= */
+function render(){
+  const n = qName.value.trim();
+  const a = qAmount.value.trim();
+  const o = qNote.value.trim();
+
+  const reN = buildRe(n);
+  const reA = buildRe(a);
+  const reO = buildRe(o);
+
+  const buf = [];
   let count = 0;
   let sum = 0;
 
-  for (let i = 0; i < data.length; i++) {
+  for (let i = 0; i < data.length; i++){
     const r = data[i];
     if (n && r.name.indexOf(n) === -1) continue;
     if (a && String(r.amount).indexOf(a) === -1) continue;
@@ -1143,25 +1417,60 @@ function render() {
     count++;
     sum += r.amount;
 
-    html += '<tr>' +
-      '<td class="c-name">' + highlight(r.name, n) + '</td>' +
-      '<td class="c-amt">'  + highlight(r.amount, a) + '</td>' +
-      '<td class="c-note">' + highlight(r.note, o) + '</td>' +
-      '</tr>';
+    buf.push(
+      '<tr><td class="c-name">' + mark(r.name, reN) + '</td>',
+      '<td class="c-amt">'  + mark(r.amount, reA) + '</td>',
+      '<td class="c-note">' + mark(r.note, reO) + '</td></tr>'
+    );
   }
 
-  tbody.innerHTML = html;
-  emptyEl.style.display = count ? 'none' : 'block';
+  tbody.innerHTML = buf.join('');
+  emptyEl.hidden = count > 0;
+
   countEl.textContent = count;
   sumEl.textContent = sum.toLocaleString('zh-CN');
+
+  const hasFilter = !!(n || a || o);
+  clearBt.classList.toggle('show', hasFilter);
 }
 
-/* ---------- 事件绑定（实时搜索） ---------- */
+/* 每帧最多渲染一次，安卓输入更顺滑 */
+let ticking = false;
+function scheduleRender(){
+  if (ticking) return;
+  ticking = true;
+  requestAnimationFrame(() => {
+    ticking = false;
+    render();
+  });
+}
+
+/* ================= 事件 ================= */
 [qName, qAmount, qNote].forEach(input => {
-  input.addEventListener('input', render);
-  input.addEventListener('search', render);
-  input.addEventListener('compositionend', render);
+  input.addEventListener('input', scheduleRender);
+  input.addEventListener('search', scheduleRender);
+  input.addEventListener('compositionend', scheduleRender);
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); input.blur(); }
+  });
 });
+
+function clearAll(){
+  qName.value = qAmount.value = qNote.value = '';
+  render();
+}
+clearBt.addEventListener('click', clearAll);
+clearB2.addEventListener('click', clearAll);
+
+/* 吸附阴影 */
+let lastStuck = false;
+window.addEventListener('scroll', () => {
+  const stuck = window.scrollY > 10;
+  if (stuck !== lastStuck){
+    lastStuck = stuck;
+    dock.classList.toggle('is-stuck', stuck);
+  }
+}, { passive: true });
 
 render();
 </script>
